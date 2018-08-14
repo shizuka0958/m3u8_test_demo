@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>摄像头详情</title>
+    <meta name="description" content="这是一个 index 页面">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link href="http://vjs.zencdn.net/5.5.3/video-js.css" rel="stylesheet">
+
+</head>
+
+<div id='videoBox'>
+    <video id="my-video" class="video-js vjs-big-play-centered" controls preload="auto" width="900" height="500" type="application/x-mpegURL"
+        poster="timg.jpeg">
+        <source src='http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8' type="application/x-mpegURL">
+        <p class="vjs-no-js"> To view this video please enable JavaScript, and consider upgrading to a web browser that
+            <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+        </p>
+    </video>
+</div>
+
+<p>测试切换src:</p>
+<input style="border:1px solid #000;width:300px" placeholder="输入m3u8地址" type="text" id='input_url'></input>
+<button id="playButton">play</button>
+
+<p>以下2个测试链接，连续切换以下2个src可以看到目前使用videojs存在的问题，切换src没有chplayer/ckplayer正常</p>
+<p>1. 可以播放：时长1分40秒 URL= http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8</p>
+<p>2. 加载失败测试例子：时长45分56秒 URL= http://cdn.can.cibntv.net/12/201702161000/rexuechangan01/rexuechangan01.m3u8</p>
+
+<script src='https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js'></script>
+<script src="http://vjs.zencdn.net/5.5.3/video.js"></script>
+<script src="http://vjs.zencdn.net/5.19/lang/zh-CN.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.12.2/videojs-contrib-hls.js" type="text/javascript"></script>
+<script>
+    videojs.options.flash.swf = "video-js.swf";
+    var myPlayer = videojs('my-video', {
+        'techOrder': ['html5', 'flash'],
+        //bigPlayButton : false,
+        // textTrackDisplay : false,
+        // posterImage: true,
+        // errorDisplay : false,
+        // controlBar : false
+    }, function () {
+        this.on('loadedmetadata', function () {
+            console.log('loadedmetadata');
+            //加载到元数据后开始播放视频
+            myPlayer.play();
+
+        })
+
+        this.on('ended', function () {
+            console.log('ended')
+        })
+        this.on('firstplay', function () {
+            console.log('firstplay')
+        })
+        this.on('loadstart', function () {
+            //开始加载
+            console.log('loadstart')
+        })
+        this.on('loadeddata', function () {
+            console.log('loadeddata')
+        })
+        this.on('seeking', function () {
+            //正在去拿视频流的路上
+            console.log('seeking')
+        })
+        this.on('seeked', function () {
+            //已经拿到视频流,可以播放
+            console.log('seeked')
+        })
+        this.on('waiting', function () {
+            console.log('waiting')
+        })
+        this.on('pause', function () {
+            console.log('pause')
+        })
+        this.on('play', function () {
+            console.log('play')
+        })
+    });
+
+    $("#playButton").click(function () {
+        console.log('playButton');
+        var videoUrl = $('#input_url').val();
+        console.log('url:',videoUrl);
+
+        var myPlayer =  videojs('my-video');  //初始化视频
+        //yPlayer.pause();
+        myPlayer.src({
+            src: videoUrl,
+            type: "application/x-mpegURL"
+        });
+        myPlayer.load();
+        myPlayer.play().then((function(){
+            console.log('play.then')
+        }));
+    });
+</script>
+</body>
+
+</html>

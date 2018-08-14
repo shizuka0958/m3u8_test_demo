@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>摄像头详情</title>
+    <meta name="description" content="这是一个 index 页面">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link href="http://vjs.zencdn.net/5.5.3/video-js.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div id='videoBox'>
+        <video id="my-video" controls preload="auto" width="900" height="500"></video>
+    </div>
+
+    <p>测试切换src:</p>
+    <input style="border:1px solid #000;width:300px" placeholder="输入m3u8地址" type="text" id='input_url'></input>
+    <button id="playButton">play</button>
+
+    <p>使用原生html5 video控件+hls可以播放，但如何进一步定制未掌握</p>
+    <p>1. 可以播放：时长1分40秒 URL= http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8</p>
+    <p>2. 加载失败测试例子：时长45分56秒 URL= http://cdn.can.cibntv.net/12/201702161000/rexuechangan01/rexuechangan01.m3u8</p>
+
+    <script src='https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/hls.js/latest/hls.min.js"></script>
+    <script>
+        if (Hls.isSupported()) {
+            var video = document.getElementById('my-video');
+            var hls = new Hls();
+            hls.loadSource('http://playertest.longtailvideo.com/adaptive/bipbop/gear4/prog_index.m3u8');
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                video.play();
+            });
+        }
+
+        $("#playButton").click(function () {
+            console.log('playButton');
+            var videoUrl = $('#input_url').val()
+            console.log('url:', videoUrl);
+            var video = document.getElementById('my-video');
+            hls.loadSource(videoUrl);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                video.play();
+            });
+        });
+    </script>
+</body>
+
+</html>
